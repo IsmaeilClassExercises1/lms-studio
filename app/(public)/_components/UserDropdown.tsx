@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+import { useSignOut } from "@/hooks/use-signout";
 import {
   BookOpen,
   ChevronDownIcon,
@@ -18,8 +18,6 @@ import {
   LogOutIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 interface iAppProps {
   name: string;
@@ -28,21 +26,7 @@ interface iAppProps {
 }
 
 const UserDropdown = ({ email, name, image }: iAppProps) => {
-  const router = useRouter();
-
-  async function signOut() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-          toast.success("Signed out successfully!"); // redirect to login page
-        },
-        onError: () => {
-          toast.error("Failed to sign out");
-        },
-      },
-    });
-  }
+  const handleSignOut = useSignOut();
 
   return (
     <DropdownMenu>
@@ -51,7 +35,7 @@ const UserDropdown = ({ email, name, image }: iAppProps) => {
           <Avatar>
             <AvatarImage src={image} alt="Phillip George" />
             <AvatarFallback className="text-xs">
-              {name[0].toUpperCase()}
+              {name[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <ChevronDownIcon
@@ -97,7 +81,7 @@ const UserDropdown = ({ email, name, image }: iAppProps) => {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut}>
+        <DropdownMenuItem onClick={handleSignOut}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
           <span>Logout</span>
         </DropdownMenuItem>
