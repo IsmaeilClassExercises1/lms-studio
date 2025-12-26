@@ -16,10 +16,11 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-export default function VerifyRequest() {
+// Create a separate component for the content that uses useSearchParams
+function VerifyRequestContent() {
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [emailPending, startTransition] = useTransition();
@@ -38,12 +39,13 @@ export default function VerifyRequest() {
             router.push("/");
           },
           onError: () => {
-            toast.error("Error verifing Email/OTP");
+            toast.error("Error verifying Email/OTP");
           },
         },
       });
     });
   }
+
   return (
     <Card className="w-full mx-auto">
       <CardHeader className="text-center">
@@ -87,10 +89,28 @@ export default function VerifyRequest() {
               <span>Loading...</span>{" "}
             </>
           ) : (
-            "Verify Acoount"
+            "Verify Account"
           )}
         </Button>
       </CardContent>
     </Card>
+  );
+}
+
+// Main component with Suspense boundary
+export default function VerifyRequest() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading verification...</p>
+          </div>
+        </div>
+      }
+    >
+      <VerifyRequestContent />
+    </Suspense>
   );
 }
