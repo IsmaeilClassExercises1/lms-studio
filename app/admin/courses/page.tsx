@@ -1,7 +1,18 @@
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+
 export default function CoursesPage() {
   return (
-    <div>
-      <h1>Courses page 1</h1>
-    </div>
+    <>
+      <div className="flex items-center justify-between">
+        <h1 className="">Your Courses</h1>
+        <Link className={buttonVariants()} href="/admin/courses/create">
+          Create Courses
+        </Link>
+      </div>
+      <div className="">
+        <h1 className="">Here you will see all of the courses</h1>
+      </div>
+    </>
   );
 }
